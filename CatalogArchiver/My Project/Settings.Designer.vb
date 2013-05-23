@@ -56,15 +56,6 @@ Namespace My
         
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
-        Public ReadOnly Property Setting() As String
-            Get
-                Return CType(Me("Setting"),String)
-            End Get
-        End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("c:\7za\7za.exe")>  _
         Public ReadOnly Property SevenZip() As String
             Get
@@ -72,15 +63,51 @@ Namespace My
             End Get
         End Property
         
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("counter.txt")>  _
-        Public Property CounterFile() As String
+        Public ReadOnly Property CounterFile() As String
             Get
                 Return CType(Me("CounterFile"),String)
             End Get
+        End Property
+        
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("d:\cataloghi\TableArchiver")>  _
+        Public ReadOnly Property SourceFolder() As String
+            Get
+                Return CType(Me("SourceFolder"),String)
+            End Get
+        End Property
+        
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("d:\cataloghi\TableArchiver\N")>  _
+        Public ReadOnly Property TableIsNewFolder() As String
+            Get
+                Return CType(Me("TableIsNewFolder"),String)
+            End Get
+        End Property
+        
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("d:\cataloghi\TableArchiver\S")>  _
+        Public ReadOnly Property TableToReplaceFolder() As String
+            Get
+                Return CType(Me("TableToReplaceFolder"),String)
+            End Get
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Y:\TableArchiver\N")>  _
+        Public Property Testdir() As String
+            Get
+                Return CType(Me("Testdir"),String)
+            End Get
             Set
-                Me("CounterFile") = value
+                Me("Testdir") = value
             End Set
         End Property
     End Class
@@ -94,9 +121,9 @@ Namespace My
     Friend Module MySettingsProperty
         
         <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>  _
-        Friend ReadOnly Property Settings() As Global.CatalogArchiverServer.My.MySettings
+        Friend ReadOnly Property Settings() As Global.TableArchiverServer.My.MySettings
             Get
-                Return Global.CatalogArchiverServer.My.MySettings.Default
+                Return Global.TableArchiverServer.My.MySettings.Default
             End Get
         End Property
     End Module
