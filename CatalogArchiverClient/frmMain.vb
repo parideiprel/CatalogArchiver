@@ -49,7 +49,7 @@ Public Class frmMain
 
         Dim dirFiles() As String
         dirFiles = System.IO.Directory.GetFiles(pathRepository + "\" + Trim(TextBox1.Text), "*.pdf")
-        Dim gneppo = MsgBox("Tavole da copiare trovate: " + dirFiles.Count.ToString + vbCrLf + vbCrLf + "Continuo ?", vbOKCancel, "Info")
+        Dim gneppo = MsgBox("Tavole da copiare trovate:    " + dirFiles.Count.ToString + vbCrLf + vbCrLf + "Continuo ?", vbOKCancel, "Info")
         If gneppo = vbOK Then
             For Each sFile As String In dirFiles
                 f = New System.IO.FileInfo(sFile)
@@ -80,7 +80,7 @@ Public Class frmMain
 
         Dim dirFiles() As String
         dirFiles = System.IO.Directory.GetFiles(pathRepository + "\" + Trim(TextBox1.Text), "*.pdf")
-        Dim gneppo = MsgBox("Tavole da copiare trovate: " + dirFiles.Count.ToString + vbCrLf + vbCrLf + "Continuo ?", vbOKCancel, "Info")
+        Dim gneppo = MsgBox("Tavole da copiare trovate:    " + dirFiles.Count.ToString + vbCrLf + vbCrLf + "Continuo ?", vbOKCancel, "Info")
         If gneppo = vbOK Then
             For Each sFile As String In dirFiles
                 f = New System.IO.FileInfo(sFile)
