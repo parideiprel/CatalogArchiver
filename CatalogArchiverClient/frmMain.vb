@@ -68,7 +68,7 @@ Public Class frmMain
         Dim x As Integer
         Dim y As Integer
         Dim contami As Integer
-        Dim attachSize As Int64
+        'Dim attachSize As Int64
 
         If TextBox1.Text = "" Or Len(TextBox1.Text) <> 4 Then
             MsgBox("ERRORE! Inserire un catalogo", vbOKOnly, "ERRORE")
@@ -158,46 +158,92 @@ Public Class frmMain
         TextBox1.Focus()
 
         If dirFilesQ.Count > 0 Then
-            ' send EMAIL !!!
-            'create the mail message
-            Dim mail As New MailMessage()
+            Try
+                Dim user() As String
+                user = mailFrom.Split("_")
 
-            'set the addresses
-            mail.From = New MailAddress(mailFrom)
-            mail.To.Add(mailTo)
-            Dim user() As String
-            user = mailFrom.Split("_")
+                Dim oApp As Microsoft.Office.Interop.Outlook.Application
+                oApp = New Microsoft.Office.Interop.Outlook.Application()
 
-            'set the content
-            mail.Subject = "Tavole Q00"
-            mail.Body = "Me le archivieresti ?" + vbCrLf + vbCrLf + "Grazie 1000" + vbCrLf + vbCrLf + "--------" + vbCrLf + UCase(user(0))
+                Dim oMsg As Microsoft.Office.Interop.Outlook.MailItem
+                oMsg = oApp.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem)
+                oMsg.Subject = "Tavole Q00"
+                oMsg.Body = "Me le archivieresti ?" + vbCrLf + vbCrLf + "Grazie 1000" + vbCrLf + vbCrLf + "--------" + vbCrLf + UCase(user(0))
+                oMsg.To = mailTo
 
-            ''add an attachment from the filesystem
-            'mail.Attachments.Add(New Attachment("c:\temp\example.txt"))
 
-            ''to add additional attachments, simply call .Add(...) again
-            'mail.Attachments.Add(New Attachment("c:\temp\example2.txt"))
-            'mail.Attachments.Add(New Attachment("c:\temp\example3.txt"))
-            For Each sFile As String In dirFilesQ
-                f = New System.IO.FileInfo(sFile)
-                attachSize = attachSize + f.Length
-            Next
-            If Math.Round(((attachSize / 1024) / 1000), 2) < 9.5 Then
-                'MsgBox("attachSize = " + Math.Round(((attachSize / 1024) / 1000), 2).ToString + " Mb", vbOKOnly)
+                ' Add an attachment
+                ' TODO: Replace with a valid attachment path.
+                Dim sSource As String = ""
+                ' TODO: Replace with attachment name
+                Dim sDisplayName As String = ""
+                Dim sBodyLen As String = oMsg.Body.Length
+                Dim oAttachs As Microsoft.Office.Interop.Outlook.Attachments = oMsg.Attachments
+                Dim oAttach As Microsoft.Office.Interop.Outlook.Attachment
 
                 For Each sFile As String In dirFilesQ
                     f = New System.IO.FileInfo(sFile)
                     'Console.WriteLine(f.Name)
-                    mail.Attachments.Add(New Attachment(f.FullName))
+                    sSource = f.FullName
+                    sDisplayName = sFile
+                    oAttach = oAttachs.Add(sSource, , sBodyLen + 1, sDisplayName)
                 Next
 
-                'send the message
-                Dim smtp As New SmtpClient(smtpAddress)
-                smtp.Send(mail)
-            Else
-                MsgBox("ATTENZIONE !!!!" + vbCrLf + vbCrLf + "Gli allegati superano i 9,5Mb" + vbCrLf + "comprimere i file e inviare manualmente !", vbOKOnly, "Errore dimensione Allegati")
-                Exit Sub
-            End If
+                ' Send
+                oMsg.Send()
+
+
+                ' Clean up
+                oApp = Nothing
+                oMsg = Nothing
+                oAttach = Nothing
+                oAttachs = Nothing
+
+            Catch ex As Exception
+                MsgBox("Rilevata eccezzione!" + vbCrLf + vbCrLf + ex.Message)
+
+            End Try
+
+            '    ' send EMAIL !!!
+            '    'create the mail message
+            '    Dim mail As New MailMessage()
+
+            '    'set the addresses
+            '    mail.From = New MailAddress(mailFrom)
+            '    mail.To.Add(mailTo)
+            '    Dim user() As String
+            '    user = mailFrom.Split("_")
+
+            '    'set the content
+            '    mail.Subject = "Tavole Q00"
+            '    mail.Body = "Me le archivieresti ?" + vbCrLf + vbCrLf + "Grazie 1000" + vbCrLf + vbCrLf + "--------" + vbCrLf + UCase(user(0))
+
+            '    ''add an attachment from the filesystem
+            '    'mail.Attachments.Add(New Attachment("c:\temp\example.txt"))
+
+            '    ''to add additional attachments, simply call .Add(...) again
+            '    'mail.Attachments.Add(New Attachment("c:\temp\example2.txt"))
+            '    'mail.Attachments.Add(New Attachment("c:\temp\example3.txt"))
+            '    For Each sFile As String In dirFilesQ
+            '        f = New System.IO.FileInfo(sFile)
+            '        attachSize = attachSize + f.Length
+            '    Next
+            '    If Math.Round(((attachSize / 1024) / 1000), 2) < 9.5 Then
+            '        'MsgBox("attachSize = " + Math.Round(((attachSize / 1024) / 1000), 2).ToString + " Mb", vbOKOnly)
+
+            '        For Each sFile As String In dirFilesQ
+            '            f = New System.IO.FileInfo(sFile)
+            '            'Console.WriteLine(f.Name)
+            '            mail.Attachments.Add(New Attachment(f.FullName))
+            '        Next
+
+            '        'send the message
+            '        Dim smtp As New SmtpClient(smtpAddress)
+            '        smtp.Send(mail)
+            '    Else
+            '        MsgBox("ATTENZIONE !!!!" + vbCrLf + vbCrLf + "Gli allegati superano i 9,5Mb" + vbCrLf + "comprimere i file e inviare manualmente !", vbOKOnly, "Errore dimensione Allegati")
+            '        Exit Sub
+            '    End If
         End If
         MsgBox("Archiviazione Terminata", vbOKOnly)
     End Sub
@@ -211,7 +257,7 @@ Public Class frmMain
         Dim x As Integer
         Dim y As Integer
         Dim contami As Integer
-        Dim attachSize As Int64
+        '        Dim attachSize As Int64
 
         If TextBox1.Text = "" Or Len(TextBox1.Text) <> 4 Then
             MsgBox("ERRORE! Inserire un catalogo", vbOKOnly, "ERRORE")
@@ -301,46 +347,91 @@ Public Class frmMain
         TextBox1.Focus()
 
         If dirFilesQ.Count > 0 Then
-            ' send EMAIL !!!
-            'create the mail message
-            Dim mail As New MailMessage()
+            Try
+                Dim user() As String
+                user = mailFrom.Split("_")
 
-            'set the addresses
-            mail.From = New MailAddress(mailFrom)
-            mail.To.Add(mailTo)
-            Dim user() As String
-            user = mailFrom.Split("_")
+                Dim oApp As Microsoft.Office.Interop.Outlook.Application
+                oApp = New Microsoft.Office.Interop.Outlook.Application()
 
-            'set the content
-            mail.Subject = "SOSTITUZIONE Tavole Q00"
-            mail.Body = "Me le sostituiresti ?" + vbCrLf + vbCrLf + "Grazie 1000" + vbCrLf + vbCrLf + "--------" + vbCrLf + UCase(user(0))
+                Dim oMsg As Microsoft.Office.Interop.Outlook.MailItem
+                oMsg = oApp.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem)
+                oMsg.Subject = "Tavole Q00"
+                oMsg.Body = "Me le archivieresti ?" + vbCrLf + vbCrLf + "Grazie 1000" + vbCrLf + vbCrLf + "--------" + vbCrLf + UCase(user(0))
+                oMsg.To = mailTo
 
-            ''add an attachment from the filesystem
-            'mail.Attachments.Add(New Attachment("c:\temp\example.txt"))
 
-            ''to add additional attachments, simply call .Add(...) again
-            'mail.Attachments.Add(New Attachment("c:\temp\example2.txt"))
-            'mail.Attachments.Add(New Attachment("c:\temp\example3.txt"))
-            For Each sFile As String In dirFilesQ
-                f = New System.IO.FileInfo(sFile)
-                attachSize = attachSize + f.Length
-            Next
-            If Math.Round(((attachSize / 1024) / 1000), 2) < 9.5 Then
-                'MsgBox("attachSize = " + Math.Round(((attachSize / 1024) / 1000), 2).ToString + " Mb", vbOKOnly)
+                ' Add an attachment
+                ' TODO: Replace with a valid attachment path.
+                Dim sSource As String = ""
+                ' TODO: Replace with attachment name
+                Dim sDisplayName As String = ""
+                Dim sBodyLen As String = oMsg.Body.Length
+                Dim oAttachs As Microsoft.Office.Interop.Outlook.Attachments = oMsg.Attachments
+                Dim oAttach As Microsoft.Office.Interop.Outlook.Attachment
 
                 For Each sFile As String In dirFilesQ
                     f = New System.IO.FileInfo(sFile)
                     'Console.WriteLine(f.Name)
-                    mail.Attachments.Add(New Attachment(f.FullName))
+                    sSource = f.FullName
+                    sDisplayName = sFile
+                    oAttach = oAttachs.Add(sSource, , sBodyLen + 1, sDisplayName)
                 Next
 
-                'send the message
-                Dim smtp As New SmtpClient(smtpAddress)
-                smtp.Send(mail)
-            Else
-                MsgBox("ATTENZIONE !!!!" + vbCrLf + vbCrLf + "Gli allegati superano i 9,5Mb" + vbCrLf + "comprimere i file e inviare manualmente !", vbOKOnly, "Errore dimensione Allegati")
-                Exit Sub
-            End If
+                ' Send
+                oMsg.Send()
+
+
+                ' Clean up
+                oApp = Nothing
+                oMsg = Nothing
+                oAttach = Nothing
+                oAttachs = Nothing
+
+            Catch ex As Exception
+                MsgBox("Rilevata eccezzione!" + vbCrLf + vbCrLf + ex.Message)
+
+            End Try
+            '    ' send EMAIL !!!
+            '    'create the mail message
+            '    Dim mail As New MailMessage()
+
+            '    'set the addresses
+            '    mail.From = New MailAddress(mailFrom)
+            '    mail.To.Add(mailTo)
+            '    Dim user() As String
+            '    user = mailFrom.Split("_")
+
+            '    'set the content
+            '    mail.Subject = "SOSTITUZIONE Tavole Q00"
+            '    mail.Body = "Me le sostituiresti ?" + vbCrLf + vbCrLf + "Grazie 1000" + vbCrLf + vbCrLf + "--------" + vbCrLf + UCase(user(0))
+
+            '    ''add an attachment from the filesystem
+            '    'mail.Attachments.Add(New Attachment("c:\temp\example.txt"))
+
+            '    ''to add additional attachments, simply call .Add(...) again
+            '    'mail.Attachments.Add(New Attachment("c:\temp\example2.txt"))
+            '    'mail.Attachments.Add(New Attachment("c:\temp\example3.txt"))
+            '    For Each sFile As String In dirFilesQ
+            '        f = New System.IO.FileInfo(sFile)
+            '        attachSize = attachSize + f.Length
+            '    Next
+            '    If Math.Round(((attachSize / 1024) / 1000), 2) < 9.5 Then
+            '        'MsgBox("attachSize = " + Math.Round(((attachSize / 1024) / 1000), 2).ToString + " Mb", vbOKOnly)
+
+            '        For Each sFile As String In dirFilesQ
+            '            f = New System.IO.FileInfo(sFile)
+            '            'Console.WriteLine(f.Name)
+            '            mail.Attachments.Add(New Attachment(f.FullName))
+            '        Next
+
+            '        'send the message
+            '        Dim smtp As New SmtpClient(smtpAddress)
+            '        smtp.Send(mail)
+            '    Else
+            '        MsgBox("ATTENZIONE !!!!" + vbCrLf + vbCrLf + "Gli allegati superano i 9,5Mb" + vbCrLf + "comprimere i file e inviare manualmente !", vbOKOnly, "Errore dimensione Allegati")
+            '        Exit Sub
+            '    End If
         End If
         MsgBox("Archiviazione Terminata", vbOKOnly)
     End Sub
